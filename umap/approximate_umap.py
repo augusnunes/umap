@@ -26,7 +26,7 @@ class ApproximateUMAP:
         self.n_projections = n_projections
 
 
-    def get_dist_matriz(self, X):
+    def get_dist_matrix(self, X):
         return pairwise_distances(X, metric=dists.named_distances[self.metric])
     
     def fit_transform(self, X): # method=["mean_dist", "comment_neighbor_mode"]
@@ -35,7 +35,7 @@ class ApproximateUMAP:
             self.umap_params['random_state'] = np.random.random() 
             map_reduce = UMAP(**self.umap_params)
             new_X = map_reduce.fit_transform(X)
-            self.dists[i,:,:] = get_dist_matriz(new_X)
+            self.dists[i,:,:] = get_dist_matrix(new_X)
         return self.dists.mean(axis=0)
 
 
