@@ -1,5 +1,5 @@
 import umap.distances as dists
-import umap.umap_ import UMAP 
+from umap.umap_ import UMAP
 import numpy as np
 from sklearn.metrics import pairwise_distances
 
