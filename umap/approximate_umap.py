@@ -26,8 +26,8 @@ class ApproximateUMAP:
         self.n_projections = n_projections
 
 
-    def get_dist_matriz(self):
-        return pairwise_distances(self._tmp_X, metric=dists.named_distances[self.metric])
+    def get_dist_matriz(self, X):
+        return pairwise_distances(X, metric=dists.named_distances[self.metric])
     
     def fit_transform(self, X): # method=["mean_dist", "comment_neighbor_mode"]
         self.dists = np.zeros((self.n_projections, X.shape[0], X.shape[0]))
