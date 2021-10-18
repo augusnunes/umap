@@ -31,7 +31,7 @@ class ApproximateUMAP:
     
     def fit_transform(self, X): # method=["mean_dist", "comment_neighbor_mode"]
         self.dists = np.zeros((self.n_projections, X.shape[0], X.shape[0]))
-        rng = np.random.default_rng(seed)
+        rng = np.random.default_rng(self.random_state)
         seeds = rng.choice(99_999_999, size=self.n_projections, replace=False)
         for i in range(self.n_projections):
             self.umap_params['random_state'] = seeds[i] 
