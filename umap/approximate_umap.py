@@ -36,7 +36,7 @@ class ApproximateUMAP:
             self.umap_params['random_state'] = seeds[i] 
             map_reduce = UMAP(**self.umap_params)
             new_X = map_reduce.fit_transform(X)
-            self.dists[i,:,:] = get_dist_matrix(new_X)
+            self.dists[i,:,:] = self.get_dist_matrix(new_X)
         return self.dists.mean(axis=0)
 
 
