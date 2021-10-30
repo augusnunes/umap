@@ -63,32 +63,33 @@ class ApproximateUMAP:
             self.umap_params['random_state'] = seeds[np.argmin(dist)] 
             return UMAP(**self.umap_params).fit_transform(X) # (n, n_components) 
         elif self.output_type == "simplicial":
-            if self.a is None or self.b is None:
-                self._a, self._b = find_ab_params(self.spread, self.min_dist)
-            else:
-                self._a = self.a
-                self._b = self.b
+            # if self.a is None or self.b is None:
+            #     self._a, self._b = find_ab_params(self.spread, self.min_dist)
+            # else:
+            #     self._a = self.a
+            #     self._b = self.b
+            molde = map_reduce
             self.embedding_, aux_data = simplicial_set_embedding(
                 X,
                 self.dists.mean(axis=0),
-                self.a,
-                self.b,
-                self.repulsion_strength,
-                self.negative_sample_rate,
+                molde._a,
+                molde._b,
+                molde.repulsion_strength,
+                molde.negative_sample_rate,
                 0 if self.n_epochs is None else self.n_epochs,
-                self.init,
+                molde.init,
                 self.random_state,
-                self._input_distance_func,
-                self._metric_kwds,
-                self.densmap,
-                self._densmap_kwds,
-                self.output_dens,
-                self._output_distance_func,
-                self._output_metric_kwds,
-                self.output_metric in ("euclidean", "l2"),
-                self.random_state is None,
-                self.verbose,
-                tqdm_kwds=self.tqdm_kwds,
+                molde._input_distance_func,
+                molde._metric_kwds,
+                molde.densmap,
+                molde._densmap_kwds,
+                molde.output_dens,
+                molde._output_distance_func,
+                molde._output_metric_kwds,
+                molde.output_metric in ("euclidean", "l2"),
+                molde.random_state is None,
+                molde.verbose,
+                tqdm_kwds=molde.tqdm_kwds,
             )
             return self.embedding_
 
