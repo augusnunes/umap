@@ -1,5 +1,5 @@
 import umap.distances as dists
-from umap.umap_ import UMAP, simplicial_set_embedding
+from umap.umap_ import UMAP, simplicial_set_embedding, find_ab_params
 import numpy as np
 from sklearn.metrics import pairwise_distances
 from sklearn.neighbors import NearestNeighbors
@@ -63,6 +63,11 @@ class ApproximateUMAP:
             self.umap_params['random_state'] = seeds[np.argmin(dist)] 
             return UMAP(**self.umap_params).fit_transform(X) # (n, n_components) 
         elif self.output_type == "simplicial":
+            if self.a is None or self.b is None:
+                self._a, self._b = find_ab_params(self.spread, self.min_dist)
+            else:
+                self._a = self.a
+                self._b = self.b
             self.embedding_, aux_data = simplicial_set_embedding(
                 X,
                 self.dists.mean(axis=0),
