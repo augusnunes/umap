@@ -1,9 +1,10 @@
 import umap.distances as dists
-from umap.umap_ import UMAP
+from umap.umap_ import UMAP, simplicial_set_embedding
 import numpy as np
 from sklearn.metrics import pairwise_distances
 from sklearn.neighbors import NearestNeighbors
 from scipy.stats import mode
+from sklearn.utils import check_array
 
 class ApproximateUMAP:
     def __init__(
@@ -57,10 +58,34 @@ class ApproximateUMAP:
         if self.output_type == "precomputed":
             return self.dists.mean(axis=0)
         elif self.output_type == "default":
-            media_matrix = self.dists.mean(axis=0)
-            dist = np.abs(media_matrix-self.dists).mean(axis=0)
-            self.umap_params['random_state'] = seeds[np.argmin(dist)]
-            return UMAP(**self.umap_params).fit_transform(X)
+            media_matrix = self.dists.mean(axis=0) # (n, n)
+            dist = np.abs(media_matrix-self.dists).mean(axis=0) # (n_proj,)
+            self.umap_params['random_state'] = seeds[np.argmin(dist)] 
+            return UMAP(**self.umap_params).fit_transform(X) # (n, n_components) 
+        elif self.output_type == "simplicial":
+            self.embedding_, aux_data = simplicial_set_embedding(
+                X,
+                self.dists.mean(axis=0),
+                self.a,
+                self.b,
+                self.repulsion_strength,
+                self.negative_sample_rate,
+                0 if self.n_epochs is None else self.n_epochs,
+                self.init,
+                self.random_state,
+                self._input_distance_func,
+                self._metric_kwds,
+                self.densmap,
+                self._densmap_kwds,
+                self.output_dens,
+                self._output_distance_func,
+                self._output_metric_kwds,
+                self.output_metric in ("euclidean", "l2"),
+                self.random_state is None,
+                self.verbose,
+                tqdm_kwds=self.tqdm_kwds,
+            )
+            return self.embedding_
 
 
         # elif self.approx_method == "comment_neighbor_mode":
